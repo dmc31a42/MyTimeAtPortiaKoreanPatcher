@@ -20,13 +20,13 @@ namespace SlimeRancherKoreanPatcherCShop
         const string SHAREDASSETS0_PATCH_PATH = TEMP_FOLDER_NAME + SHAREDASSETS0_PATCH_NAME + @"\";
         const string RESOURCE_PATCH_NAME = "resources_patch";
         const string RESOURCE_PATCH_PATH = TEMP_FOLDER_NAME + RESOURCE_PATCH_NAME + @"\";
-        const string GAME_NAME = "Slime Rancher";
-        const string GAME_DATA_NAME = "SlimeRancher";
+        const string GAME_NAME = "My Time At Portia";
+        const string GAME_DATA_NAME = "Portia";
         const string UNITY_RESOURCES_ASSETS_NAME = "resources.assets";
         const string UNITY_SHARED0_ASSETS_NAME = "sharedassets0.assets";
         const bool DEBUG = true;
         const string currentVersion = "20180101";
-        const string currentVersionURL = @"https://github.com/dmc31a42/SlimeRancherKoreanPatcher/raw/ModifyParserAndCSV2Zanata/currentVersion.txt";
+        const string currentVersionURL = @"https://github.com/dmc31a42/MyTimeAtPortiaKoreanPatcher/raw/ModifyParserAndCSV2Zanata/currentVersion.txt";
 
         static void Main(string[] args)
         {
@@ -81,7 +81,7 @@ namespace SlimeRancherKoreanPatcherCShop
                             = new SlimeRancherKoreanPatcherManagedCpp.ManagedPatcher(SlimeRancherPath, currentDirectoryPath);
                         SlimeRancherKoreanPatcherManagedCpp.AssetInfo[] assetInfos = managedPatcher.GetAssetInfos();
                         Console.WriteLine("번역된 문장 다운로드 및 적용 중...");
-                        DownloadCSVandPatch2();
+                        //DownloadCSVandPatch2();
                         Console.WriteLine("패치 파일 생성 중...");
                         MakeAssetFile2(assetInfos);
                         Console.WriteLine("패치된 유니티 에셋 생성 중...");
@@ -165,9 +165,9 @@ namespace SlimeRancherKoreanPatcherCShop
 
         static void SwitchFile()
         {
-            FileDeleteIfExist(SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME);
+            //FileDeleteIfExist(SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME);
             FileDeleteIfExist(SlimeRancherPath + UNITY_SHARED0_ASSETS_NAME);
-            System.IO.File.Move(SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME + ".modded", SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME);
+            //System.IO.File.Move(SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME + ".modded", SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME);
             System.IO.File.Move(SlimeRancherPath + UNITY_SHARED0_ASSETS_NAME + ".modded", SlimeRancherPath + UNITY_SHARED0_ASSETS_NAME);
         }
 
@@ -520,7 +520,7 @@ namespace SlimeRancherKoreanPatcherCShop
             string shaderSuffix = "_Shader";
             string atlasSuffix = "_Atlas";
 
-            string[] languageDataNames =
+            /*string[] languageDataNames =
             {
                 "achieve",
                 "actor",
@@ -532,16 +532,16 @@ namespace SlimeRancherKoreanPatcherCShop
                 "range",
                 "tutorial",
                 "ui"
-            };
+            };*/
 
             string[] materialNames =
             {
-                "OpenSans-Semibold SDF Material"
+                "SourceHanSansSC-Medium SDF Material"
             };
 
             string[] monoBehaviourNames =
             {
-                "MonoBehaviour OpenSans SDF"
+                "MonoBehaviour SourceHanSansSC-Medium SDF"
             };
 
             CreateFolderOrClean(SHAREDASSETS0_PATCH_PATH);
@@ -555,7 +555,7 @@ namespace SlimeRancherKoreanPatcherCShop
                 using (FileStream fsMaterial = new FileStream(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat", FileMode.Open, FileAccess.ReadWrite))
                 {
                     // Shader
-                    fsMaterial.Seek(0x00000028, SeekOrigin.Begin);
+                    fsMaterial.Seek(0x0000002C, SeekOrigin.Begin);
                     AssetInfo shaderInfo = Array.Find(AssetInfos, x => x.name == materialNames[i] + shaderSuffix);
                     byte[] byteShaderPathID = BitConverter.GetBytes(shaderInfo.pathID);
                     for (int j = 0; j < 4; j++)
@@ -565,7 +565,7 @@ namespace SlimeRancherKoreanPatcherCShop
 
                     // Atlas
                     //fsMaterial.Seek(0x000000D4, SeekOrigin.Begin);
-                    fsMaterial.Seek(0x0000005C, SeekOrigin.Begin);
+                    fsMaterial.Seek(0x00000058, SeekOrigin.Begin);
                     AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == materialNames[i] + atlasSuffix);
                     byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
                     for (int j = 0; j < 4; j++)
@@ -596,7 +596,7 @@ namespace SlimeRancherKoreanPatcherCShop
                     }
 
                     // Material
-                    fsMono2.Seek(0x00000034, SeekOrigin.Begin);
+                    fsMono2.Seek(0x00000044, SeekOrigin.Begin);
                     string temp = materialNames[0];
                     AssetInfo materialInfo = Array.Find(AssetInfos, x => x.name == temp);
                     byte[] byteMaterialPathID = BitConverter.GetBytes(materialInfo.pathID);
@@ -606,7 +606,7 @@ namespace SlimeRancherKoreanPatcherCShop
                     }
 
                     // Atlas
-                    fsMono2.Seek(0x000000A8, SeekOrigin.Begin);
+                    fsMono2.Seek(0x000000B8, SeekOrigin.Begin);
                     AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == temp + atlasSuffix);
                     byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
                     for (int j = 0; j < 4; j++)
@@ -614,7 +614,7 @@ namespace SlimeRancherKoreanPatcherCShop
                         fsMono2.WriteByte(byteAtlasPathID[j]);
                     }
 
-                    // OpenSans SDF Cyrillic Material
+                    /*// OpenSans SDF Cyrillic Material
                     fsMono2.Seek(0x00015DEC, SeekOrigin.Begin);
                     AssetInfo cyrillicInfo = Array.Find(AssetInfos, x => x.name == "MonoBehaviour OpenSans SDF Cyrillic");
                     byte[] byteCyrillicPathID = BitConverter.GetBytes(cyrillicInfo.pathID);
@@ -630,7 +630,7 @@ namespace SlimeRancherKoreanPatcherCShop
                     for (int j = 0; j < 4; j++)
                     {
                         fsMono2.WriteByte(byteNotoSansCJKscPathID[j]);
-                    }
+                    }*/
                 }
             }
 
@@ -649,7 +649,7 @@ namespace SlimeRancherKoreanPatcherCShop
                 }
             }
 
-            //res
+            /*//res
             List<string> resPatchList = new List<string>();
             CreateFolderOrClean(RESOURCE_PATCH_PATH);
             for (int i = 0; i < languageDataNames.Length; i++)
@@ -707,7 +707,7 @@ namespace SlimeRancherKoreanPatcherCShop
                         swResPatchList.Write(resPatchList[j]);
                     }
                 }
-            }
+            }*/
         }
 
         // Will be deprecated after v3.1

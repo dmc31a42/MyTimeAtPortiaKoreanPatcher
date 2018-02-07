@@ -1,0 +1,39 @@
+Mono path[0] = 'D:/Steam/steamapps/common/My Time At Portia/MyTimeAtPortiaKoreanPatcher/UnityTextMeshProPorject/build/test_Data/Managed'
+Mono path[1] = 'D:/Steam/steamapps/common/My Time At Portia/MyTimeAtPortiaKoreanPatcher/UnityTextMeshProPorject/build/test_Data/Mono'
+Mono config path = 'D:/Steam/steamapps/common/My Time At Portia/MyTimeAtPortiaKoreanPatcher/UnityTextMeshProPorject/build/test_Data/Mono/etc'
+PlayerConnection initialized from D:/Steam/steamapps/common/My Time At Portia/MyTimeAtPortiaKoreanPatcher/UnityTextMeshProPorject/build/test_Data (debug = 0)
+PlayerConnection initialized network socket : 0.0.0.0 55287
+Broadcasting "[IP] 169.254.157.0 [Port] 55287 [Flags] 3 [Guid] 4233220914 [EditorId] 2390986785 [Version] 1048832 [Id] WindowsPlayer(NAKWONELECWORK1) [Debug] 1" to [169.254.255.255:54997]...
+Waiting for connection from host on [0.0.0.0:55287]...
+PlayerConnection accepted from [169.254.157.0] handle:0x3f0
+Started listening to [0.0.0.0:55287]
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,defer=y,address=0.0.0.0:56914
+PlayerConnection already initialized - listening to [0.0.0.0:55287]
+Player data archive not found at `D:/Steam/steamapps/common/My Time At Portia/MyTimeAtPortiaKoreanPatcher/UnityTextMeshProPorject/build/test_Data/data.unity3d`, using local filesystemInitialize engine version: 5.6.3f1 (d3101c3b8468)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 750 (ID=0x1381)
+    Vendor:   NVIDIA
+    VRAM:     994 MB
+    Driver:   23.21.13.8813
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
+Loading D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
+Platform assembly: D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\TextMeshPro-5.6-1.0.56-Runtime.dll (this message is harmless)
+Loading D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\TextMeshPro-5.6-1.0.56-Runtime.dll into Unity Child Domain
+- Completed reload, in  0.024 seconds
+Platform assembly: D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\Steam\steamapps\common\My Time At Portia\MyTimeAtPortiaKoreanPatcher\UnityTextMeshProPorject\build\test_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+Waiting for finish

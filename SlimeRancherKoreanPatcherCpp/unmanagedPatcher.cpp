@@ -161,17 +161,15 @@ void unmanagedPatcher::FindInformation()
 	map<string, int> monoBehaviourNames;
 	int monoBehaviourCount;
 	
-	materialNames.insert(map<string,int>::value_type("OpenSans-Semibold SDF Material",0));
+	materialNames.insert(map<string,int>::value_type("SourceHanSansSC-Medium SDF Material",0));
 	materialCount = materialNames.size();
 
-	monoBehaviourNames.insert(map<string, int>::value_type("OpenSans SDF",0));
-	monoBehaviourNames.insert(map<string, int>::value_type("OpenSans SDF Cyrillic", 0));
-	monoBehaviourNames.insert(map<string, int>::value_type("NotoSansCJKsc-Regular SDF Chinese", 0));
+	monoBehaviourNames.insert(map<string, int>::value_type("SourceHanSansSC-Medium SDF",0));
 	monoBehaviourCount = monoBehaviourNames.size();
 	
 	int languageDataCount = 11;
-	unsigned int noExtGlobalPathID = 0;
-	for (noExtGlobalPathID = 1; noExtGlobalPathID < noExtGlobalAssetsFileTable->assetFileInfoCount; noExtGlobalPathID++)
+	//unsigned int noExtGlobalPathID = 0;
+	/*for (noExtGlobalPathID = 1; noExtGlobalPathID < noExtGlobalAssetsFileTable->assetFileInfoCount; noExtGlobalPathID++)
 	{
 		AssetFileInfoEx *tempAssetFileInfoEx = noExtGlobalAssetsFileTable->getAssetInfo(noExtGlobalPathID);
 #ifdef MY_DEBUG
@@ -248,7 +246,7 @@ void unmanagedPatcher::FindInformation()
 		{
 			break;
 		}
-	}
+	}*/
 
 	unsigned int currentPathID = 1;
 	currentPathID = 1;
@@ -319,12 +317,12 @@ void unmanagedPatcher::FindInformation()
 							int shaderPathID = pShader->GetValue()->AsInt();
 							int atlasPathID = pAtlas->GetValue()->AsInt();
 
-							AssetFileInfoEx *shaderAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(shaderPathID);
+							//AssetFileInfoEx *shaderAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(shaderPathID);
 							UnmanagedAssetInfo shaderAssetInfo;
 							shaderAssetInfo.pathID = shaderPathID;
 							shaderAssetInfo.name = FindIter->first + "_Shader";
-							shaderAssetInfo.offset = (int)shaderAssetFileInfoEx->absolutePos;
-							shaderAssetInfo.size = shaderAssetFileInfoEx->curFileSize;
+							//shaderAssetInfo.offset = (int)shaderAssetFileInfoEx->absolutePos;
+							//shaderAssetInfo.size = shaderAssetFileInfoEx->curFileSize;
 							assetInfos.push_back(shaderAssetInfo);
 
 							AssetFileInfoEx *atlasAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(atlasPathID);
@@ -494,7 +492,7 @@ void unmanagedPatcher::MakeModdedAssets()
 	//////////////////////////////////////////////
 	// resources
 	//////////////////////////////////////////////
-	string resPatchListFilePath = "temp\\resources_patch\\resources_patch_list.txt";
+	/*string resPatchListFilePath = "temp\\resources_patch\\resources_patch_list.txt";
 
 	ifstream ifsResPatchListFile(resPatchListFilePath);
 	std::vector<string> resPatchFileName;
@@ -564,7 +562,7 @@ void unmanagedPatcher::MakeModdedAssets()
 	{
 		fclose(pModdedResFile);
 		pModdedResFile = NULL;
-	}
+	}*/
 
 #ifdef MY_DEBUG
 	logOfstream << "Slime Rancher Korean Translation Patch Complete. Exit" << endl;
