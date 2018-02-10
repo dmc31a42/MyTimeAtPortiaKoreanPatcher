@@ -156,118 +156,218 @@ void unmanagedPatcher::FindInformation()
 #ifdef MY_DEBUG
 	logOfstream << "start FindInformation" << endl;
 #endif
-	map<string, int> materialNames;
-	int materialCount;
-	map<string, int> monoBehaviourNames;
-	int monoBehaviourCount;
-	
-	materialNames.insert(map<string,int>::value_type("OpenSans-Semibold SDF Material",0));
-	materialCount = materialNames.size();
-
-	monoBehaviourNames.insert(map<string, int>::value_type("OpenSans SDF",0));
-	monoBehaviourCount = monoBehaviourNames.size();
-	
-	int languageDataCount = 11;
-	unsigned int noExtGlobalPathID = 0;
-	for (noExtGlobalPathID = 1; noExtGlobalPathID < noExtGlobalAssetsFileTable->assetFileInfoCount; noExtGlobalPathID++)
+	//resources
 	{
-		AssetFileInfoEx *tempAssetFileInfoEx = noExtGlobalAssetsFileTable->getAssetInfo(noExtGlobalPathID);
-#ifdef MY_DEBUG
-		logOfstream << "[" << noExtGlobalPathID << "] : ->curFileType : " << tempAssetFileInfoEx->curFileType << endl;
-#endif
-		if (tempAssetFileInfoEx->curFileType == 0x00000093)
-		{
-			AssetTypeTemplateField *tempAssetTypeTemplateField = new AssetTypeTemplateField;
-			tempAssetTypeTemplateField->FromClassDatabase(classDatabaseFile, &classDatabaseFile->classes[findByClassID[tempAssetFileInfoEx->curFileType]], (DWORD)0);
-			AssetTypeInstance tempAssetTypeInstance((DWORD)1, &tempAssetTypeTemplateField, AssetsReaderFromFile, (LPARAM)pNoExtGlobalAssetsFile, noExtGlobalAssetsFile->header.endianness ? true : false, tempAssetFileInfoEx->absolutePos);
-			AssetTypeValueField *pBase = tempAssetTypeInstance.GetBaseField();
-			if (pBase)
-			{
-				AssetTypeValueField *pm_Container = pBase->Get("m_Container");
-				if (pm_Container && pm_Container->IsDummy() == false)
-				{
-					unsigned int m_ContainerSize = pm_Container->Get("Array")->GetChildrenCount();
-					//AssetTypeValueField **m_ContainerArray = pm_Container->GetChildrenList();
-#ifdef MY_DEBUG
-					logOfstream << "m_ContainerSize : " << m_ContainerSize << endl;
-#endif // MY_DEBUG
-					for (unsigned int i = 0; i < m_ContainerSize; i++)
-					{
-						//AssetTypeValueField *tempAssetTypeValueField = (*(m_ContainerArray + i));
-						AssetTypeValueField *tempAssetTypeValueField = pm_Container->Get("Array")->Get(i);
-						string resourcesPath = tempAssetTypeValueField->Get("first")->GetValue()->AsString();
-						int pos = resourcesPath.find("i18n/en/");
-#ifdef MY_DEBUG
-						logOfstream << "[" << i << "] : " << resourcesPath << ", pos : " << pos << endl;
-#endif // MY_DEBUG
-						if (pos != -1)
-						{
-							string textAssetName = resourcesPath.substr(8, resourcesPath.length() - 8);
-							int textAssetPathID = tempAssetTypeValueField->Get("second")->Get("m_PathID")->GetValue()->AsInt();
-#ifdef MY_DEBUG
-							logOfstream << "textAssetName : " << textAssetName << "PathID : " << textAssetPathID << endl;
-#endif // MY_DEBUG
-							AssetFileInfoEx *textAssetFileInfoEx = resAssetsFileTable->getAssetInfo(textAssetPathID);
-							UnmanagedAssetInfo tempAssetInfo;
-							tempAssetInfo.pathID = textAssetPathID;
-							tempAssetInfo.name = textAssetFileInfoEx->name;
-							tempAssetInfo.offset = (int)textAssetFileInfoEx->absolutePos;
-							tempAssetInfo.size = textAssetFileInfoEx->curFileSize;
-							assetInfos.push_back(tempAssetInfo);
+		map<string, int> resourcesMaterialNames;
+		int resourcesMaterialCount;
+		map<string, int> resouecesMonoBehaviourNames;
+		int resouecesMonoBehaviourCount;
 
-							// extract original txt file
-							AssetTypeTemplateField *textAssetTypeTemplateField = new AssetTypeTemplateField;
-							textAssetTypeTemplateField->FromClassDatabase(classDatabaseFile, &classDatabaseFile->classes[findByClassID[textAssetFileInfoEx->curFileType]], (DWORD)0);
-							AssetTypeInstance textAssetTypeInstance((DWORD)1, &textAssetTypeTemplateField, AssetsReaderFromFile, (LPARAM)pResAssetsFile, resAssetsFile->header.endianness ? true : false, textAssetFileInfoEx->absolutePos);
-							AssetTypeValueField *pTextBase = textAssetTypeInstance.GetBaseField();
-							if (pTextBase)
+		resourcesMaterialNames.insert(map<string, int>::value_type("KaushanScript-Regular SDF Material", 0));
+		resourcesMaterialNames.insert(map<string, int>::value_type("SourceHanSansSC-Bold SDF Material", 0));
+		resourcesMaterialCount = resourcesMaterialNames.size();
+
+		resouecesMonoBehaviourNames.insert(map<string, int>::value_type("KaushanScript-Regular SDF", 0));
+		resouecesMonoBehaviourNames.insert(map<string, int>::value_type("SourceHanSansSC-Bold SDF", 0));
+		resouecesMonoBehaviourCount = resouecesMonoBehaviourNames.size();
+
+
+		unsigned int resourcesCurrentPathID = 1;
+		resourcesCurrentPathID = 1;
+		for (; resourcesCurrentPathID <= resAssetsFileTable->assetFileInfoCount; resourcesCurrentPathID++)
+		{
+			if (resourcesMaterialNames.size() == 0)
+			{
+				break;
+			}
+			AssetFileInfoEx *tempAssetFileInfoEx = resAssetsFileTable->getAssetInfo(resourcesCurrentPathID);
+#ifdef MY_DEBUG
+			logOfstream << "[" << resourcesCurrentPathID << "] : " << "->name : " << tempAssetFileInfoEx->name << endl;
+#endif
+			map<string, int>::iterator FindIter = resourcesMaterialNames.find(tempAssetFileInfoEx->name);
+			if (FindIter != resourcesMaterialNames.end())
+			{
+				FindIter->second--;
+				if (FindIter->second == -1)
+				{
+					UnmanagedAssetInfo tempAssetInfo;
+					tempAssetInfo.pathID = resourcesCurrentPathID;
+					tempAssetInfo.name = tempAssetFileInfoEx->name;
+					tempAssetInfo.offset = (int)tempAssetFileInfoEx->absolutePos;
+					tempAssetInfo.size = tempAssetFileInfoEx->curFileSize;
+					assetInfos.push_back(tempAssetInfo);
+					AssetTypeTemplateField *tempAssetTypeTemplateField = new AssetTypeTemplateField;
+					tempAssetTypeTemplateField->FromClassDatabase(classDatabaseFile, &classDatabaseFile->classes[findByClassID[tempAssetFileInfoEx->curFileType]], (DWORD)0);
+					AssetTypeInstance tempAssetTypeInstance((DWORD)1, &tempAssetTypeTemplateField, AssetsReaderFromFile, (LPARAM)pResAssetsFile, resAssetsFile->header.endianness ? true : false, tempAssetFileInfoEx->absolutePos);
+					AssetTypeValueField *pBase = tempAssetTypeInstance.GetBaseField();
+					if (pBase) {
+						AssetTypeValueField *pShader = pBase->Get("m_Shader")->Get("m_PathID");
+						AssetTypeValueField *pm_TexEnvs = pBase->Get("m_SavedProperties")->Get("m_TexEnvs")->Get("Array");
+						if (pm_TexEnvs && pm_TexEnvs->IsDummy() == false)
+						{
+							int TexEnvPosition = -1;
+							int TexEnvsSize = pm_TexEnvs->GetChildrenCount();
+							for (int i = 0; i < TexEnvsSize; i++)
 							{
-								AssetTypeValueField *pm_Script = pTextBase->Get("m_Script");
-								if (pm_Script && pm_Script->IsDummy() == false)
+								AssetTypeValueField *pm_TexEnv = pBase->Get("m_SavedProperties")->Get("m_TexEnvs")->Get("Array")->Get((unsigned int)i)->Get("first");
+								if (pm_TexEnv && pm_TexEnv->IsDummy() == false)
 								{
-									string m_Script = pm_Script->GetValue()->AsString();
-									ofstream ofsTempTxt(_currentDirectory + "temp\\" + tempAssetInfo.name + ".txt", std::ifstream::binary);
-									ofsTempTxt.write(m_Script.c_str(),m_Script.length());
-									ofsTempTxt.close();
-									languageDataCount--;
+									string TexEnvName = pm_TexEnv->GetValue()->AsString();
+									if (TexEnvName == "_MainTex")
+									{
+										TexEnvPosition = i;
+									}
 								}
 							}
-						}
-						//ClearAssetTypeValueField(tempAssetTypeValueField);
-						if (languageDataCount == 0)
-						{
-							break;
+							AssetTypeValueField *pAtlas = pBase->Get("m_SavedProperties")->Get("m_TexEnvs")->Get("Array")->Get((unsigned int)TexEnvPosition)->Get("second")->Get("m_Texture")->Get("m_PathID");
+
+							//->Get("m_TexEnvs")->Get("Array")->Get((unsigned int)0)->Get("data")->Get("second")->Get("m_Texture")->Get("m_PathID");
+
+							// 만약 한번에 필드를 못얻겠으면 순차적으로 확인해볼것
+							//AssetTypeValueField *pAtlas = pBase->Get("m_SavedProperties");
+							// //->Get("m_TexEnvs")->Get("Array")->Get((unsigned int)0)->Get("data")->Get("second")->Get("m_Texture")->Get("m_PathID");
+#ifdef MY_DEBUG
+							bool pShaderExist = pShader ? true : false;
+							bool pAtlasExist = pAtlas ? true : false;
+							bool pShaderIsDummy = pShader->IsDummy();
+							bool pAtlasIsDummy = pAtlas->IsDummy();
+							logOfstream << "[" << FindIter->first << "]" << "pShaderExist : " << pShaderExist << endl;
+							logOfstream << "[" << FindIter->first << "]" << "pAtlasExist : " << pAtlasExist << endl;
+							logOfstream << "[" << FindIter->first << "]" << "pShaderIsDummy : " << pShaderIsDummy << endl;
+							logOfstream << "[" << FindIter->first << "]" << "pAtlasIsDummy : " << pAtlasIsDummy << endl;
+#endif
+							if (pShader && pAtlas && !pShader->IsDummy() && !pAtlas->IsDummy())
+							{
+								int shaderPathID = pShader->GetValue()->AsInt();
+								int atlasPathID = pAtlas->GetValue()->AsInt();
+
+								//AssetFileInfoEx *shaderAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(shaderPathID);
+								UnmanagedAssetInfo shaderAssetInfo;
+								shaderAssetInfo.pathID = shaderPathID;
+								shaderAssetInfo.name = FindIter->first + "_Shader";
+								//shaderAssetInfo.offset = (int)shaderAssetFileInfoEx->absolutePos;
+								//shaderAssetInfo.size = shaderAssetFileInfoEx->curFileSize;
+								assetInfos.push_back(shaderAssetInfo);
+
+								AssetFileInfoEx *atlasAssetFileInfoEx = resAssetsFileTable->getAssetInfo(atlasPathID);
+								UnmanagedAssetInfo atlasAssetInfo;
+								atlasAssetInfo.pathID = atlasPathID;
+								atlasAssetInfo.name = FindIter->first + "_Atlas";
+								shaderAssetInfo.offset = (int)atlasAssetFileInfoEx->absolutePos;
+								atlasAssetInfo.size = atlasAssetFileInfoEx->curFileSize;
+								assetInfos.push_back(atlasAssetInfo);
+
+								resourcesMaterialCount--;
+								if (resourcesMaterialCount == 0)
+								{
+									break;
+								}
+							}
 						}
 					}
 				}
 			}
 		}
-		if (languageDataCount == 0)
+
+		resourcesCurrentPathID = 440000;
+		for (; resourcesCurrentPathID <= resAssetsFileTable->assetFileInfoCount; resourcesCurrentPathID++)
 		{
-			break;
+			if (resouecesMonoBehaviourNames.size() == 0)
+			{
+				break;
+			}
+			AssetFileInfoEx *tempAssetFileInfoEx = resAssetsFileTable->getAssetInfo(resourcesCurrentPathID);
+			if (tempAssetFileInfoEx->curFileType < 4294901760)
+			{
+				continue;
+			}
+			AssetTypeTemplateField *tempAssetTypeTemplateField = new AssetTypeTemplateField;
+			tempAssetTypeTemplateField->FromClassDatabase(classDatabaseFile, &classDatabaseFile->classes[findByClassID[0x00000072]], (DWORD)0);
+			AssetTypeInstance tempAssetTypeInstance((DWORD)1, &tempAssetTypeTemplateField, AssetsReaderFromFile, (LPARAM)pResAssetsFile, resAssetsFile->header.endianness ? true : false, tempAssetFileInfoEx->absolutePos);
+			AssetTypeValueField *pBase = tempAssetTypeInstance.GetBaseField();
+			if (pBase)
+			{
+				AssetTypeValueField *pm_Name = pBase->Get("m_Name");
+				if (pm_Name && pm_Name->IsDummy() == false)
+				{
+					string m_Name = pm_Name->GetValue()->AsString();
+#ifdef MY_DEBUG
+					logOfstream << "[PathID : " << resourcesCurrentPathID << "] : " << m_Name << ", ->curFileType : " << tempAssetFileInfoEx->curFileType << endl;
+#endif
+					map<string, int>::iterator FindIter = resouecesMonoBehaviourNames.find(m_Name);
+					if (FindIter != resouecesMonoBehaviourNames.end())
+					{
+						FindIter->second--;
+						if (FindIter->second == -1)
+						{
+							UnmanagedAssetInfo tempAssetInfo;
+							tempAssetInfo.pathID = resourcesCurrentPathID;
+							tempAssetInfo.name = "MonoBehaviour " + m_Name;
+							tempAssetInfo.offset = (int)tempAssetFileInfoEx->absolutePos;
+							tempAssetInfo.size = tempAssetFileInfoEx->curFileSize;
+							assetInfos.push_back(tempAssetInfo);
+
+							AssetTypeValueField *pScript = pBase->Get("m_Script")->Get("m_PathID");
+
+							if (pScript && pScript->IsDummy() == false)
+							{
+								UnmanagedAssetInfo scriptAssetInfo;
+								scriptAssetInfo.pathID = pScript->GetValue()->AsInt();
+								scriptAssetInfo.name = "TMP_FontAsset";
+								scriptAssetInfo.offset = -1;
+								scriptAssetInfo.size = -1;
+								assetInfos.push_back(scriptAssetInfo);
+
+								resouecesMonoBehaviourCount--;
+								if (resouecesMonoBehaviourCount == 0)
+								{
+									break;
+								}
+							}
+						}
+					}
+					/*free(pm_Name);
+					pm_Name = 0;*/
+				}
+				/*free(pBase);
+				pBase = 0;*/
+			}
 		}
 	}
 
-	unsigned int currentPathID = 1;
-	currentPathID = 1;
-	for (; currentPathID <= sharedAssetsFileTable->assetFileInfoCount; currentPathID++)
+	//sharedAssets0
+	map<string, int> sharedAssets0MaterialNames;
+	int sharedAssets0MaterialCount;
+	map<string, int> sharedAssets0MonoBehaviourNames;
+	int sharedAssets0MonoBehaviourCount;
+	
+	sharedAssets0MaterialNames.insert(map<string,int>::value_type("SourceHanSansSC-Medium SDF Material",0));
+	sharedAssets0MaterialCount = sharedAssets0MaterialNames.size();
+
+	sharedAssets0MonoBehaviourNames.insert(map<string, int>::value_type("SourceHanSansSC-Medium SDF",0));
+	sharedAssets0MonoBehaviourCount = sharedAssets0MonoBehaviourNames.size();
+	
+	
+	unsigned int sharedAssetCurrentPathID = 1;
+	sharedAssetCurrentPathID = 1;
+	for (; sharedAssetCurrentPathID <= sharedAssetsFileTable->assetFileInfoCount; sharedAssetCurrentPathID++)
 	{
-		if (materialNames.size() == 0)
+		if (sharedAssets0MaterialNames.size() == 0)
 		{
 			break;
 		}
-		AssetFileInfoEx *tempAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(currentPathID);
+		AssetFileInfoEx *tempAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(sharedAssetCurrentPathID);
 #ifdef MY_DEBUG
-		logOfstream << "[" << currentPathID << "] : " << "->name : " << tempAssetFileInfoEx->name << endl;
+		logOfstream << "[" << sharedAssetCurrentPathID << "] : " << "->name : " << tempAssetFileInfoEx->name << endl;
 #endif
-		map<string, int>::iterator FindIter = materialNames.find(tempAssetFileInfoEx->name);
-		if (FindIter != materialNames.end())
+		map<string, int>::iterator FindIter = sharedAssets0MaterialNames.find(tempAssetFileInfoEx->name);
+		if (FindIter != sharedAssets0MaterialNames.end())
 		{
 			FindIter->second--;
 			if (FindIter->second == -1)
 			{
 				UnmanagedAssetInfo tempAssetInfo;
-				tempAssetInfo.pathID = currentPathID;
+				tempAssetInfo.pathID = sharedAssetCurrentPathID;
 				tempAssetInfo.name = tempAssetFileInfoEx->name;
 				tempAssetInfo.offset = (int)tempAssetFileInfoEx->absolutePos;
 				tempAssetInfo.size = tempAssetFileInfoEx->curFileSize;
@@ -317,12 +417,12 @@ void unmanagedPatcher::FindInformation()
 							int shaderPathID = pShader->GetValue()->AsInt();
 							int atlasPathID = pAtlas->GetValue()->AsInt();
 
-							AssetFileInfoEx *shaderAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(shaderPathID);
+							//AssetFileInfoEx *shaderAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(shaderPathID);
 							UnmanagedAssetInfo shaderAssetInfo;
 							shaderAssetInfo.pathID = shaderPathID;
 							shaderAssetInfo.name = FindIter->first + "_Shader";
-							shaderAssetInfo.offset = (int)shaderAssetFileInfoEx->absolutePos;
-							shaderAssetInfo.size = shaderAssetFileInfoEx->curFileSize;
+							//shaderAssetInfo.offset = (int)shaderAssetFileInfoEx->absolutePos;
+							//shaderAssetInfo.size = shaderAssetFileInfoEx->curFileSize;
 							assetInfos.push_back(shaderAssetInfo);
 
 							AssetFileInfoEx *atlasAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(atlasPathID);
@@ -333,8 +433,8 @@ void unmanagedPatcher::FindInformation()
 							atlasAssetInfo.size = atlasAssetFileInfoEx->curFileSize;
 							assetInfos.push_back(atlasAssetInfo);
 
-							materialCount--;
-							if (materialCount == 0)
+							sharedAssets0MaterialCount--;
+							if (sharedAssets0MaterialCount == 0)
 							{
 								break;
 							}
@@ -345,13 +445,13 @@ void unmanagedPatcher::FindInformation()
 		}
 	}
 
-	for (; currentPathID <= sharedAssetsFileTable->assetFileInfoCount; currentPathID++)
+	for (; sharedAssetCurrentPathID <= sharedAssetsFileTable->assetFileInfoCount; sharedAssetCurrentPathID++)
 	{
-		if (monoBehaviourNames.size() == 0)
+		if (sharedAssets0MonoBehaviourNames.size() == 0)
 		{
 			break;
 		}
-		AssetFileInfoEx *tempAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(currentPathID);
+		AssetFileInfoEx *tempAssetFileInfoEx = sharedAssetsFileTable->getAssetInfo(sharedAssetCurrentPathID);
 		if (tempAssetFileInfoEx->curFileType < 4294901760)
 		{
 			continue;
@@ -367,16 +467,16 @@ void unmanagedPatcher::FindInformation()
 			{
 				string m_Name = pm_Name->GetValue()->AsString();
 #ifdef MY_DEBUG
-				logOfstream << "[PathID : " << currentPathID << "] : " << m_Name << ", ->curFileType : " << tempAssetFileInfoEx->curFileType <<  endl;
+				logOfstream << "[PathID : " << sharedAssetCurrentPathID << "] : " << m_Name << ", ->curFileType : " << tempAssetFileInfoEx->curFileType <<  endl;
 #endif
-				map<string, int>::iterator FindIter = monoBehaviourNames.find(m_Name);
-				if (FindIter != monoBehaviourNames.end())
+				map<string, int>::iterator FindIter = sharedAssets0MonoBehaviourNames.find(m_Name);
+				if (FindIter != sharedAssets0MonoBehaviourNames.end())
 				{
 					FindIter->second--;
 					if (FindIter->second == -1)
 					{
 						UnmanagedAssetInfo tempAssetInfo;
-						tempAssetInfo.pathID = currentPathID;
+						tempAssetInfo.pathID = sharedAssetCurrentPathID;
 						tempAssetInfo.name = "MonoBehaviour " +  m_Name;
 						tempAssetInfo.offset = (int)tempAssetFileInfoEx->absolutePos;
 						tempAssetInfo.size = tempAssetFileInfoEx->curFileSize;
@@ -393,8 +493,8 @@ void unmanagedPatcher::FindInformation()
 							scriptAssetInfo.size = -1;
 							assetInfos.push_back(scriptAssetInfo);
 
-							monoBehaviourCount--;
-							if (monoBehaviourCount == 0)
+							sharedAssets0MonoBehaviourCount--;
+							if (sharedAssets0MonoBehaviourCount == 0)
 							{
 								break;
 							}
