@@ -91,6 +91,7 @@ namespace SlimeRancherKoreanPatcherCShop
                         SwitchFile();
                         Console.WriteLine("한글 폰트 이미지 파일 복사 중...");
                         File.Copy(RESOURCE_FOLDER_PATH + @"koreanAtla2.assets.resS", SlimeRancherPath + @"koreanAtla2.assets.resS", true);
+                        File.Copy(RESOURCE_FOLDER_PATH + @"koreanAtlas.assets.resS", SlimeRancherPath + @"koreanAtlas.assets.resS", true);
                         Console.WriteLine("임시로 생성된 파일 삭제 중...");
                         DeleteFolder(currentDirectoryPath + TEMP_FOLDER_NAME);
                         Console.WriteLine(GAME_NAME + " 한글패치 완료!");
@@ -165,9 +166,9 @@ namespace SlimeRancherKoreanPatcherCShop
 
         static void SwitchFile()
         {
-            //FileDeleteIfExist(SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME);
+            FileDeleteIfExist(SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME);
             FileDeleteIfExist(SlimeRancherPath + UNITY_SHARED0_ASSETS_NAME);
-            //System.IO.File.Move(SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME + ".modded", SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME);
+            System.IO.File.Move(SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME + ".modded", SlimeRancherPath + UNITY_RESOURCES_ASSETS_NAME);
             System.IO.File.Move(SlimeRancherPath + UNITY_SHARED0_ASSETS_NAME + ".modded", SlimeRancherPath + UNITY_SHARED0_ASSETS_NAME);
         }
 
@@ -520,194 +521,343 @@ namespace SlimeRancherKoreanPatcherCShop
             string shaderSuffix = "_Shader";
             string atlasSuffix = "_Atlas";
 
-            /*string[] languageDataNames =
+            List<string> resourcesPatchList = new List<string>();
             {
-                "achieve",
-                "actor",
-                "exchange",
-                "global",
-                "keys",
-                "mail",
-                "pedia",
-                "range",
-                "tutorial",
-                "ui"
-            };*/
-
-            string[] materialNames =
-            {
-                "SourceHanSansSC-Medium SDF Material"
-            };
-
-            string[] monoBehaviourNames =
-            {
-                "MonoBehaviour SourceHanSansSC-Medium SDF"
-            };
-
-            CreateFolderOrClean(SHAREDASSETS0_PATCH_PATH);
-            List<string> shared0PatchList = new List<string>();
-            // Material
-            for (int i = 0; i < materialNames.Length; i++)
-            {
-                AssetInfo materialInfo = Array.Find(AssetInfos, x => x.name == materialNames[i]);
-                File.Copy(RESOURCE_FOLDER_PATH + materialNames[i] + @"2.dat", SHAREDASSETS0_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat", true);
-                shared0PatchList.Add(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat");
-                using (FileStream fsMaterial = new FileStream(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat", FileMode.Open, FileAccess.ReadWrite))
+                CreateFolderOrClean(RESOURCE_PATCH_PATH);
+                string[] resourcesMaterialNames =
                 {
-                    // Shader
-                    fsMaterial.Seek(0x0000002C, SeekOrigin.Begin);
-                    AssetInfo shaderInfo = Array.Find(AssetInfos, x => x.name == materialNames[i] + shaderSuffix);
-                    byte[] byteShaderPathID = BitConverter.GetBytes(shaderInfo.pathID);
-                    for (int j = 0; j < 4; j++)
-                    {
-                        fsMaterial.WriteByte(byteShaderPathID[j]);
-                    }
+                    "KaushanScript-Regular SDF Material"
+                };
 
-                    // Atlas
-                    //fsMaterial.Seek(0x000000D4, SeekOrigin.Begin);
-                    fsMaterial.Seek(0x00000058, SeekOrigin.Begin);
-                    AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == materialNames[i] + atlasSuffix);
-                    byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
-                    for (int j = 0; j < 4; j++)
-                    {
-                        fsMaterial.WriteByte(byteAtlasPathID[j]);
-                    }
-                    File.Copy(RESOURCE_FOLDER_PATH + materialNames[i] + atlasSuffix + @"2.dat", SHAREDASSETS0_PATCH_PATH + "Raw_0_" + atlasInfo.pathID + ".dat", true);
-                    shared0PatchList.Add(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + atlasInfo.pathID + ".dat");
-                }
-            }
-
-            //MonoBehaviour
-            for (int i = 0; i < monoBehaviourNames.Length; i++)
-            {
-                AssetInfo mono2Info = Array.Find(AssetInfos, x => x.name == monoBehaviourNames[i]);
-                File.Copy(RESOURCE_FOLDER_PATH + monoBehaviourNames[i] + @"2.dat", SHAREDASSETS0_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat", true);
-                shared0PatchList.Add(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat");
-                using (FileStream fsMono2 = new FileStream(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat", FileMode.Open, FileAccess.ReadWrite))
+                string[] resourcesMonoBehaviourNames =
                 {
-
-                    // TMP_FontAsset
-                    fsMono2.Seek(0x00000014, SeekOrigin.Begin);
-                    AssetInfo TMP_FontAssetInfo = Array.Find(AssetInfos, x => x.name == "TMP_FontAsset");
-                    byte[] byteTMP_FontAssetPathID = BitConverter.GetBytes(TMP_FontAssetInfo.pathID);
-                    for (int j = 0; j < 4; j++)
-                    {
-                        fsMono2.WriteByte(byteTMP_FontAssetPathID[j]);
-                    }
-
-                    // Material
-                    fsMono2.Seek(0x00000044, SeekOrigin.Begin);
-                    string temp = materialNames[0];
-                    AssetInfo materialInfo = Array.Find(AssetInfos, x => x.name == temp);
-                    byte[] byteMaterialPathID = BitConverter.GetBytes(materialInfo.pathID);
-                    for (int j = 0; j < 4; j++)
-                    {
-                        fsMono2.WriteByte(byteMaterialPathID[j]);
-                    }
-
-                    // Atlas
-                    fsMono2.Seek(0x000000B8, SeekOrigin.Begin);
-                    AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == temp + atlasSuffix);
-                    byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
-                    for (int j = 0; j < 4; j++)
-                    {
-                        fsMono2.WriteByte(byteAtlasPathID[j]);
-                    }
-
-                    /*// OpenSans SDF Cyrillic Material
-                    fsMono2.Seek(0x00015DEC, SeekOrigin.Begin);
-                    AssetInfo cyrillicInfo = Array.Find(AssetInfos, x => x.name == "MonoBehaviour OpenSans SDF Cyrillic");
-                    byte[] byteCyrillicPathID = BitConverter.GetBytes(cyrillicInfo.pathID);
-                    for (int j = 0; j < 4; j++)
-                    {
-                        fsMono2.WriteByte(byteCyrillicPathID[j]);
-                    }
-
-                    // NotoSansCJKsc-Regular SDF Chinese
-                    fsMono2.Seek(0x00015DF8, SeekOrigin.Begin);
-                    AssetInfo notoSansCJKscInfo = Array.Find(AssetInfos, x => x.name == "MonoBehaviour NotoSansCJKsc-Regular SDF Chinese");
-                    byte[] byteNotoSansCJKscPathID = BitConverter.GetBytes(notoSansCJKscInfo.pathID);
-                    for (int j = 0; j < 4; j++)
-                    {
-                        fsMono2.WriteByte(byteNotoSansCJKscPathID[j]);
-                    }*/
-                }
-            }
-
-            using (StreamWriter swPatchList = new StreamWriter(SHAREDASSETS0_PATCH_PATH + SHAREDASSETS0_PATCH_NAME + "_list.txt"))
-            {
-                for (int i = 0; i < shared0PatchList.Count; i++)
+                    "MonoBehaviour KaushanScript-Regular SDF"
+                };
+                
+                // Material
+                for (int i = 0; i < resourcesMaterialNames.Length; i++)
                 {
-                    if (i != shared0PatchList.Count - 1)
+                    AssetInfo materialInfo = Array.Find(AssetInfos, x => x.name == resourcesMaterialNames[i]);
+                    File.Copy(RESOURCE_FOLDER_PATH + resourcesMaterialNames[i] + @".dat", RESOURCE_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat", true);
+                    resourcesPatchList.Add(RESOURCE_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat");
+                    using (FileStream fsMaterial = new FileStream(RESOURCE_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat", FileMode.Open, FileAccess.ReadWrite))
                     {
-                        swPatchList.WriteLine(shared0PatchList[i]);
-                    }
-                    else
-                    {
-                        swPatchList.Write(shared0PatchList[i]);
-                    }
-                }
-            }
-
-            /*//res
-            List<string> resPatchList = new List<string>();
-            CreateFolderOrClean(RESOURCE_PATCH_PATH);
-            for (int i = 0; i < languageDataNames.Length; i++)
-            {
-                AssetInfo tempLanguageDataInfo = Array.Find(AssetInfos, x => x.name == languageDataNames[i]);
-                //File.Copy(RESOURCE_FOLDER_PATH + languageDataNames[i] + @".txt", RESOURCE_PATCH_PATH + "Raw_0_" + tempLanguageDataInfo.pathID + ".dat", true);
-                resPatchList.Add(RESOURCE_PATCH_PATH + "Raw_0_" + tempLanguageDataInfo.pathID + ".dat");
-                using (FileStream fsTempLang = new FileStream(RESOURCE_PATCH_PATH + "Raw_0_" + tempLanguageDataInfo.pathID + ".dat", FileMode.Create, FileAccess.ReadWrite))
-                {
-                    byte[] languageDataNameSize = BitConverter.GetBytes(languageDataNames[i].Length);
-                    for (int j = 0; j < 4; j++)
-                    {
-                        fsTempLang.WriteByte(languageDataNameSize[j]);
-                    }
-                    for (int j = 0; j < languageDataNames[i].Length; j++)
-                    {
-                        fsTempLang.WriteByte((byte)languageDataNames[i][j]);
-                    }
-                    while (fsTempLang.Length % 4 != 0)
-                    {
-                        fsTempLang.WriteByte((byte)0);
-                    }
-                    using (FileStream fsTxt = new FileStream(TEMP_FOLDER_NAME + languageDataNames[i] + @".txt", FileMode.Open, FileAccess.Read))
-                    {
-                        byte[] fsTxtSize = BitConverter.GetBytes(fsTxt.Length);
+                        // Shader
+                        fsMaterial.Seek(0x0000002C, SeekOrigin.Begin);
+                        AssetInfo shaderInfo = Array.Find(AssetInfos, x => x.name == resourcesMaterialNames[i] + shaderSuffix);
+                        byte[] byteShaderPathID = BitConverter.GetBytes(shaderInfo.pathID);
                         for (int j = 0; j < 4; j++)
                         {
-                            fsTempLang.WriteByte(fsTxtSize[j]);
+                            fsMaterial.WriteByte(byteShaderPathID[j]);
                         }
-                        for (int j = 0; j < fsTxt.Length; j++)
+
+                        // Atlas
+                        //fsMaterial.Seek(0x000000D4, SeekOrigin.Begin);
+                        fsMaterial.Seek(0x000000D8, SeekOrigin.Begin);
+                        AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == resourcesMaterialNames[i] + atlasSuffix);
+                        byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
+                        for (int j = 0; j < 4; j++)
                         {
-                            fsTempLang.WriteByte((byte)fsTxt.ReadByte());
+                            fsMaterial.WriteByte(byteAtlasPathID[j]);
                         }
-                    }
-                    while (fsTempLang.Length % 4 != 0)
-                    {
-                        fsTempLang.WriteByte((byte)0);
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        fsTempLang.WriteByte((byte)0);
+                        File.Copy(RESOURCE_FOLDER_PATH + resourcesMaterialNames[i] + atlasSuffix + @".dat", RESOURCE_PATCH_PATH + "Raw_0_" + atlasInfo.pathID + ".dat", true);
+                        resourcesPatchList.Add(RESOURCE_PATCH_PATH + "Raw_0_" + atlasInfo.pathID + ".dat");
                     }
                 }
-            }
-            using (StreamWriter swResPatchList = new StreamWriter(RESOURCE_PATCH_PATH + RESOURCE_PATCH_NAME + "_list.txt"))
-            {
-                for (int j = 0; j < resPatchList.Count; j++)
+
+                //MonoBehaviour
+                for (int i = 0; i < resourcesMonoBehaviourNames.Length; i++)
                 {
-                    if (j != resPatchList.Count - 1)
+                    AssetInfo mono2Info = Array.Find(AssetInfos, x => x.name == resourcesMonoBehaviourNames[i]);
+                    File.Copy(RESOURCE_FOLDER_PATH + resourcesMonoBehaviourNames[i] + @".dat", RESOURCE_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat", true);
+                    resourcesPatchList.Add(RESOURCE_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat");
+                    using (FileStream fsMono2 = new FileStream(RESOURCE_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat", FileMode.Open, FileAccess.ReadWrite))
                     {
-                        swResPatchList.WriteLine(resPatchList[j]);
+
+                        // TMP_FontAsset
+                        fsMono2.Seek(0x00000014, SeekOrigin.Begin);
+                        AssetInfo TMP_FontAssetInfo = Array.Find(AssetInfos, x => x.name == "TMP_FontAsset");
+                        byte[] byteTMP_FontAssetPathID = BitConverter.GetBytes(TMP_FontAssetInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteTMP_FontAssetPathID[j]);
+                        }
+
+                        // Material
+                        fsMono2.Seek(0x00000044, SeekOrigin.Begin);
+                        string temp = resourcesMaterialNames[0];
+                        AssetInfo materialInfo = Array.Find(AssetInfos, x => x.name == temp);
+                        byte[] byteMaterialPathID = BitConverter.GetBytes(materialInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteMaterialPathID[j]);
+                        }
+
+                        // Atlas
+                        fsMono2.Seek(0x000000B0, SeekOrigin.Begin);
+                        AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == temp + atlasSuffix);
+                        byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteAtlasPathID[j]);
+                        }
+
+                        /*// OpenSans SDF Cyrillic Material
+                        fsMono2.Seek(0x00015DEC, SeekOrigin.Begin);
+                        AssetInfo cyrillicInfo = Array.Find(AssetInfos, x => x.name == "MonoBehaviour OpenSans SDF Cyrillic");
+                        byte[] byteCyrillicPathID = BitConverter.GetBytes(cyrillicInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteCyrillicPathID[j]);
+                        }
+
+                        // NotoSansCJKsc-Regular SDF Chinese
+                        fsMono2.Seek(0x00015DF8, SeekOrigin.Begin);
+                        AssetInfo notoSansCJKscInfo = Array.Find(AssetInfos, x => x.name == "MonoBehaviour NotoSansCJKsc-Regular SDF Chinese");
+                        byte[] byteNotoSansCJKscPathID = BitConverter.GetBytes(notoSansCJKscInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteNotoSansCJKscPathID[j]);
+                        }*/
+                    }
+                }
+
+                
+            }
+
+            {
+                string[] resourcesMaterialNames =
+                {
+                    "SourceHanSansSC-Bold SDF Material"
+                };
+
+                string[] resourcesMonoBehaviourNames =
+                {
+                    "MonoBehaviour SourceHanSansSC-Bold SDF"
+                };
+
+                // Material
+                for (int i = 0; i < resourcesMaterialNames.Length; i++)
+                {
+                    AssetInfo materialInfo = Array.Find(AssetInfos, x => x.name == resourcesMaterialNames[i]);
+                    File.Copy(RESOURCE_FOLDER_PATH + resourcesMaterialNames[i] + @".dat", RESOURCE_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat", true);
+                    resourcesPatchList.Add(RESOURCE_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat");
+                    using (FileStream fsMaterial = new FileStream(RESOURCE_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat", FileMode.Open, FileAccess.ReadWrite))
+                    {
+                        // Shader
+                        fsMaterial.Seek(0x0000002C, SeekOrigin.Begin);
+                        AssetInfo shaderInfo = Array.Find(AssetInfos, x => x.name == resourcesMaterialNames[i] + shaderSuffix);
+                        byte[] byteShaderPathID = BitConverter.GetBytes(shaderInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMaterial.WriteByte(byteShaderPathID[j]);
+                        }
+
+                        // Atlas
+                        //fsMaterial.Seek(0x000000D4, SeekOrigin.Begin);
+                        fsMaterial.Seek(0x000000D8, SeekOrigin.Begin);
+                        AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == resourcesMaterialNames[i] + atlasSuffix);
+                        byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMaterial.WriteByte(byteAtlasPathID[j]);
+                        }
+                        File.Copy(RESOURCE_FOLDER_PATH + resourcesMaterialNames[i] + atlasSuffix + @".dat", RESOURCE_PATCH_PATH + "Raw_0_" + atlasInfo.pathID + ".dat", true);
+                        resourcesPatchList.Add(RESOURCE_PATCH_PATH + "Raw_0_" + atlasInfo.pathID + ".dat");
+                    }
+                }
+
+                //MonoBehaviour
+                for (int i = 0; i < resourcesMonoBehaviourNames.Length; i++)
+                {
+                    AssetInfo mono2Info = Array.Find(AssetInfos, x => x.name == resourcesMonoBehaviourNames[i]);
+                    File.Copy(RESOURCE_FOLDER_PATH + resourcesMonoBehaviourNames[i] + @".dat", RESOURCE_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat", true);
+                    resourcesPatchList.Add(RESOURCE_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat");
+                    using (FileStream fsMono2 = new FileStream(RESOURCE_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat", FileMode.Open, FileAccess.ReadWrite))
+                    {
+
+                        // TMP_FontAsset
+                        fsMono2.Seek(0x00000014, SeekOrigin.Begin);
+                        AssetInfo TMP_FontAssetInfo = Array.Find(AssetInfos, x => x.name == "TMP_FontAsset");
+                        byte[] byteTMP_FontAssetPathID = BitConverter.GetBytes(TMP_FontAssetInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteTMP_FontAssetPathID[j]);
+                        }
+
+                        // Material
+                        fsMono2.Seek(0x00000040, SeekOrigin.Begin);
+                        string temp = resourcesMaterialNames[0];
+                        AssetInfo materialInfo = Array.Find(AssetInfos, x => x.name == temp);
+                        byte[] byteMaterialPathID = BitConverter.GetBytes(materialInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteMaterialPathID[j]);
+                        }
+
+                        // Atlas
+                        fsMono2.Seek(0x000000B4, SeekOrigin.Begin);
+                        AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == temp + atlasSuffix);
+                        byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteAtlasPathID[j]);
+                        }
+
+                        /*// OpenSans SDF Cyrillic Material
+                        fsMono2.Seek(0x00015DEC, SeekOrigin.Begin);
+                        AssetInfo cyrillicInfo = Array.Find(AssetInfos, x => x.name == "MonoBehaviour OpenSans SDF Cyrillic");
+                        byte[] byteCyrillicPathID = BitConverter.GetBytes(cyrillicInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteCyrillicPathID[j]);
+                        }
+
+                        // NotoSansCJKsc-Regular SDF Chinese
+                        fsMono2.Seek(0x00015DF8, SeekOrigin.Begin);
+                        AssetInfo notoSansCJKscInfo = Array.Find(AssetInfos, x => x.name == "MonoBehaviour NotoSansCJKsc-Regular SDF Chinese");
+                        byte[] byteNotoSansCJKscPathID = BitConverter.GetBytes(notoSansCJKscInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteNotoSansCJKscPathID[j]);
+                        }*/
+                    }
+                }
+
+
+            }
+
+            using (StreamWriter swPatchList = new StreamWriter(RESOURCE_PATCH_PATH + RESOURCE_PATCH_NAME + "_list.txt"))
+            {
+                for (int i = 0; i < resourcesPatchList.Count; i++)
+                {
+                    if (i != resourcesPatchList.Count - 1)
+                    {
+                        swPatchList.WriteLine(resourcesPatchList[i]);
                     }
                     else
                     {
-                        swResPatchList.Write(resPatchList[j]);
+                        swPatchList.Write(resourcesPatchList[i]);
                     }
                 }
-            }*/
+            }
+
+            {
+                string[] sharedAssets0MaterialNames =
+                {
+                    "SourceHanSansSC-Medium SDF Material"
+                };
+
+                string[] sharedAssets0MonoBehaviourNames =
+                {
+                    "MonoBehaviour SourceHanSansSC-Medium SDF"
+                };
+
+                CreateFolderOrClean(SHAREDASSETS0_PATCH_PATH);
+                List<string> shared0PatchList = new List<string>();
+                // Material
+                for (int i = 0; i < sharedAssets0MaterialNames.Length; i++)
+                {
+                    AssetInfo materialInfo = Array.Find(AssetInfos, x => x.name == sharedAssets0MaterialNames[i]);
+                    File.Copy(RESOURCE_FOLDER_PATH + sharedAssets0MaterialNames[i] + @".dat", SHAREDASSETS0_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat", true);
+                    shared0PatchList.Add(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat");
+                    using (FileStream fsMaterial = new FileStream(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + materialInfo.pathID + ".dat", FileMode.Open, FileAccess.ReadWrite))
+                    {
+                        // Shader
+                        fsMaterial.Seek(0x0000002C, SeekOrigin.Begin);
+                        AssetInfo shaderInfo = Array.Find(AssetInfos, x => x.name == sharedAssets0MaterialNames[i] + shaderSuffix);
+                        byte[] byteShaderPathID = BitConverter.GetBytes(shaderInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMaterial.WriteByte(byteShaderPathID[j]);
+                        }
+
+                        // Atlas
+                        //fsMaterial.Seek(0x000000D4, SeekOrigin.Begin);
+                        fsMaterial.Seek(0x00000058, SeekOrigin.Begin);
+                        AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == sharedAssets0MaterialNames[i] + atlasSuffix);
+                        byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMaterial.WriteByte(byteAtlasPathID[j]);
+                        }
+                        File.Copy(RESOURCE_FOLDER_PATH + sharedAssets0MaterialNames[i] + atlasSuffix + @".dat", SHAREDASSETS0_PATCH_PATH + "Raw_0_" + atlasInfo.pathID + ".dat", true);
+                        shared0PatchList.Add(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + atlasInfo.pathID + ".dat");
+                    }
+                }
+
+                //MonoBehaviour
+                for (int i = 0; i < sharedAssets0MonoBehaviourNames.Length; i++)
+                {
+                    AssetInfo mono2Info = Array.Find(AssetInfos, x => x.name == sharedAssets0MonoBehaviourNames[i]);
+                    File.Copy(RESOURCE_FOLDER_PATH + sharedAssets0MonoBehaviourNames[i] + @".dat", SHAREDASSETS0_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat", true);
+                    shared0PatchList.Add(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat");
+                    using (FileStream fsMono2 = new FileStream(SHAREDASSETS0_PATCH_PATH + "Raw_0_" + mono2Info.pathID + ".dat", FileMode.Open, FileAccess.ReadWrite))
+                    {
+
+                        // TMP_FontAsset
+                        fsMono2.Seek(0x00000014, SeekOrigin.Begin);
+                        AssetInfo TMP_FontAssetInfo = Array.Find(AssetInfos, x => x.name == "TMP_FontAsset");
+                        byte[] byteTMP_FontAssetPathID = BitConverter.GetBytes(TMP_FontAssetInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteTMP_FontAssetPathID[j]);
+                        }
+
+                        // Material
+                        fsMono2.Seek(0x00000044, SeekOrigin.Begin);
+                        string temp = sharedAssets0MaterialNames[0];
+                        AssetInfo materialInfo = Array.Find(AssetInfos, x => x.name == temp);
+                        byte[] byteMaterialPathID = BitConverter.GetBytes(materialInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteMaterialPathID[j]);
+                        }
+
+                        // Atlas
+                        fsMono2.Seek(0x000000B8, SeekOrigin.Begin);
+                        AssetInfo atlasInfo = Array.Find(AssetInfos, x => x.name == temp + atlasSuffix);
+                        byte[] byteAtlasPathID = BitConverter.GetBytes(atlasInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteAtlasPathID[j]);
+                        }
+
+                        /*// OpenSans SDF Cyrillic Material
+                        fsMono2.Seek(0x00015DEC, SeekOrigin.Begin);
+                        AssetInfo cyrillicInfo = Array.Find(AssetInfos, x => x.name == "MonoBehaviour OpenSans SDF Cyrillic");
+                        byte[] byteCyrillicPathID = BitConverter.GetBytes(cyrillicInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteCyrillicPathID[j]);
+                        }
+
+                        // NotoSansCJKsc-Regular SDF Chinese
+                        fsMono2.Seek(0x00015DF8, SeekOrigin.Begin);
+                        AssetInfo notoSansCJKscInfo = Array.Find(AssetInfos, x => x.name == "MonoBehaviour NotoSansCJKsc-Regular SDF Chinese");
+                        byte[] byteNotoSansCJKscPathID = BitConverter.GetBytes(notoSansCJKscInfo.pathID);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            fsMono2.WriteByte(byteNotoSansCJKscPathID[j]);
+                        }*/
+                    }
+                }
+
+                using (StreamWriter swPatchList = new StreamWriter(SHAREDASSETS0_PATCH_PATH + SHAREDASSETS0_PATCH_NAME + "_list.txt"))
+                {
+                    for (int i = 0; i < shared0PatchList.Count; i++)
+                    {
+                        if (i != shared0PatchList.Count - 1)
+                        {
+                            swPatchList.WriteLine(shared0PatchList[i]);
+                        }
+                        else
+                        {
+                            swPatchList.Write(shared0PatchList[i]);
+                        }
+                    }
+                }
+            }
         }
 
         // Will be deprecated after v3.1
